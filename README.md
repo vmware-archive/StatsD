@@ -2,11 +2,39 @@
 
 # Wavefront StatsD Plugin
 
-The Wavefront StatsD Plugin sends StatsD metrics to Wavefront. It also extends StatsD by allowing point tags.
+The Wavefront StatsD Plugin emits StatsD metrics to Wavefront. It also extends StatsD by allowing point tags.
+
+## Installation
+
+1. Clone or download StatsD from https://github.com/etsy/statsd.
+2. Simply drop `backends/wavefront.js` from this repository into the statsd `backends` directory.
+3. Update `config.js` to use the backend.
+
+## Configuring
+
+The backend expects the following parameters:
+- wavefrontHost - The host on your network that is running the Wavefront proxy.
+- wavefrontPort - The port that your Wavefront proxy is listening on.
+- wavefrontTagPrefix - The prefix for point tags (see Tagging Metrics below).
+- defaultSource - The source tag that will get added to metrics as they're sent to Wavefront.
+
+
+Below is an example of a complete config.js for using the Wavefront backend.
+```
+{ 
+  port: 8125
+, backends: ["./backends/wavefront"]
+, wavefrontHost: '192.168.99.100'
+, wavefrontPort: 2878
+, wavefrontTagPrefix: '_t_'
+, defaultSource: "statsd"
+}
+```
+
 
 ## Tagging Metrics
 
-By default, you can send metrics to StatsD as follows:
+By default, you can send metrics through StatsD as follows:
 
 ```
 echo "gauge1:+3|g" | nc -u -w0 192.168.99.100 8125
@@ -24,22 +52,8 @@ gauge1:+3
  - tag2:v2
 ```
 
-## Installation
+Metrics are sent to Wavefront in the Wavefront format. See the "Wavefront Data Format" in our knowledgebase for more information.
 
-1. Clone or download StatsD from https://github.com/etsy/statsd.
-2. Copy `config.js` and `backends/wavefront.js` from this repository into the statsd directory.
-3. Update `config.js` to point to your Wavefront agent. Here is the sample config.js:
 
-```
-{
-  port: 8125
-, backends: ["./backends/wavefront"]
-, dumpMessages: true
-, wavefrontProxyServer: "192.168.99.100"
-, wavefrontProxyPort: 3878
-}
-```
-Run StatsD with the new config:
-```
-node stats.js config.js
-```
+
+
