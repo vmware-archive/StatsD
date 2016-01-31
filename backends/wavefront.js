@@ -1,16 +1,3 @@
-/*
- * Flush stats to wavefront (http://wavefront.net/).
- *
- * To enable this backend, include 'wavefront' in the backends
- * configuration array:
- *
- *   backends: ['wavefront']
- *
- * This backend supports the following config options:
- *
- *   wavefrontHost: Hostname of wavefront server.
- *   wavefrontPort: Port to contact wavefront server at.
- */
 
 var net = require('net'),
    util = require('util');
@@ -40,7 +27,7 @@ var setsNamespace     = [];
 
 var wavefrontStats = {};
 
-var post_stats = function wavefront_post_stats(statString) {
+var postStats = function wavefrontPostStats(statString) {
   var last_flush = wavefrontStats.last_flush || 0;
   var last_exception = wavefrontStats.last_exception || 0;
   if (wavefrontHost) {
@@ -54,8 +41,6 @@ var post_stats = function wavefront_post_stats(statString) {
       wavefront.on('connect', function() {
         var ts = Math.round(new Date().getTime() / 1000);
         var namespace = globalNamespace.concat('statsd');
-        //statString += 'put ' + namespace.join(".") + '.wavefrontStats.last_exception ' + last_exception + ' ' + ts + "\n";
-        //statString += 'put ' + namespace.join(".") + '.wavefrontStats.last_flush ' + last_flush + ' ' + ts + "\n";
 		if (debug) {
 			util.log(statString)
 		}
@@ -72,9 +57,9 @@ var post_stats = function wavefront_post_stats(statString) {
   }
 }
 
-function parse_tags(metric_name) {
+function parseTags(metricName) {
   var tags = [];
-  var tagParts = metric_name.split(wavefrontTagPrefix);
+  var tagParts = metricName.split(wavefrontTagPrefix);
   for (var i=1;i<tagParts.length;i++) {
     var tagAndVal = tagParts[i].split("_v_");
     var tag = tagAndVal[0];
@@ -85,14 +70,13 @@ function parse_tags(metric_name) {
 }
 
 
-// Strips out all tag information from the given metric name
-function strip_tags(metric_name) {
-  return metric_name.split(wavefrontTagPrefix)[0];
+// Strips tags out of metric name
+function stripTags(metricName) {
+  return metricName.split(wavefrontTagPrefix)[0];
 }
 
 
-var flush_stats = function wavefront_flush(ts, metrics) {
-  //var suffix = " source=statsd\n";
+var flushStats = function wavefrontFlush(ts, metrics) {
   var suffix = "\n";
   if (defaultSource) {
    suffix = " source=" + defaultSource + "\n"; 
@@ -101,19 +85,19 @@ var flush_stats = function wavefront_flush(ts, metrics) {
   var statString = '';
   var numStats = 0;
   var key;
-  var timer_data_key;
+  var timerData_key;
   var counters = metrics.counters;
   var gauges = metrics.gauges;
   var timers = metrics.timers;
   var sets = metrics.sets;
-  var timer_data = metrics.timer_data;
+  var timerData = metrics.timerData;
   var statsd_metrics = metrics.statsd_metrics;
 
   for (key in counters) {
-    var tags = parse_tags(key);
-    var stripped_key = strip_tags(key)
+    var tags = parseTags(key);
+    var strippedKey = stripTags(key)
 
-    var namespace = counterNamespace.concat(stripped_key);
+    var namespace = counterNamespace.concat(strippedKey);
     var value = counters[key];
 
     if (legacyNamespace === true) {
@@ -126,15 +110,15 @@ var flush_stats = function wavefront_flush(ts, metrics) {
     numStats += 1;
   }
 
-  for (key in timer_data) {
-    if (Object.keys(timer_data).length > 0) {
-      for (timer_data_key in timer_data[key]) {
-        var tags = parse_tags(key);
-        var stripped_key = strip_tags(key)
+  for (key in timerData) {
+    if (Object.keys(timerData).length > 0) {
+      for (timerData_key in timerData[key]) {
+        var tags = parseTags(key);
+        var strippedKey = stripTags(key)
 
-        var namespace = timerNamespace.concat(stripped_key);
+        var namespace = timerNamespace.concat(strippedKey);
         var the_key = namespace.join(".");
-        statString += 'put ' + the_key + '.' + timer_data_key + ' ' + ts + ' ' + timer_data[key][timer_data_key] + ' ' + tags.join(' ') + suffix;
+        statString += 'put ' + the_key + '.' + timerData_key + ' ' + ts + ' ' + timerData[key][timerData_key] + ' ' + tags.join(' ') + suffix;
       }
 
       numStats += 1;
@@ -142,20 +126,20 @@ var flush_stats = function wavefront_flush(ts, metrics) {
   }
 
   for (key in gauges) {
-    var tags = parse_tags(key);
-    var stripped_key = strip_tags(key)
+    var tags = parseTags(key);
+    var strippedKey = stripTags(key)
 
-    var namespace = gaugesNamespace.concat(stripped_key);
+    var namespace = gaugesNamespace.concat(strippedKey);
     //statString += 'put ' + namespace.join(".") + ' ' + ts + ' ' + gauges[key] + ' ' + tags.join(' ') + suffix;
     statString += namespace.join(".") + ' ' + gauges[key] + ' ' + ts + ' ' + tags.join(' ') + suffix;
     numStats += 1;
   }
 
   for (key in sets) {
-    var tags = parse_tags(key);
-    var stripped_key = strip_tags(key)
+    var tags = parseTags(key);
+    var strippedKey = stripTags(key)
 
-    var namespace = setsNamespace.concat(stripped_key);
+    var namespace = setsNamespace.concat(strippedKey);
     //statString += 'put ' + namespace.join(".") + '.count ' + ts + ' ' + sets[key].values().length + ' ' + tags.join(' ') + suffix;
     statString += namespace.join(".") + '.count ' + sets[key].values().length + ' ' + ts + ' ' + tags.join(' ') + suffix;
     numStats += 1;
@@ -180,16 +164,16 @@ var flush_stats = function wavefront_flush(ts, metrics) {
       statString += the_key.join(".") + ' ' + statsd_metrics[key] + ' ' + ts + suffix;
     }
   }
-  post_stats(statString);
+  postStats(statString);
 };
 
-var backend_status = function wavefront_status(writeCb) {
+var backendStatus = function wavefrontStatus(writeCb) {
   for (stat in wavefrontStats) {
     writeCb(null, 'wavefront', stat, wavefrontStats[stat]);
   }
 };
 
-exports.init = function wavefront_init(startup_time, config, events) {
+exports.init = function wavefrontInit(startup_time, config, events) {
   debug = config.debug;
   wavefrontHost = config.wavefrontHost;
   wavefrontPort = config.wavefrontPort;
@@ -246,8 +230,8 @@ exports.init = function wavefront_init(startup_time, config, events) {
 
   flushInterval = config.flushInterval;
 
-  events.on('flush', flush_stats);
-  events.on('status', backend_status);
+  events.on('flush', flushStats);
+  events.on('status', backendStatus);
 
   return true;
 };
