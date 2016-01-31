@@ -1,0 +1,19 @@
+{
+  "name": "statsd-wavefront-backend",
+  "description": "StatsD backend for Wavefront",
+  "author": "Evan Pease",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wavefrontHQ/StatsD.git"
+  },
+  "version": "0.1.0",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "nodeunit": "0.7.x"
+  },
+  "engine": {
+    "node": ">=0.4"
+  },
+  "main": "StatsD/backends/wavefront.js"
+}
