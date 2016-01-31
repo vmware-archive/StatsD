@@ -5,6 +5,7 @@
 The Wavefront StatsD backend emits StatsD metrics to Wavefront. It also extends StatsD by allowing point tags.
 
 ## Installation
+This readme assumes you've already downloaded [statsd](https://github.com/etsy/statsd) and have a basic understanding. 
 
 1. Clone or download StatsD from https://github.com/etsy/statsd.
 2. Simply drop `backends/wavefront.js` from this repository into the statsd `backends` directory.
