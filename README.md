@@ -1,8 +1,8 @@
 
 
-# Wavefront StatsD Plugin
+# Wavefront StatsD Backend
 
-The Wavefront StatsD Plugin emits StatsD metrics to Wavefront. It also extends StatsD by allowing point tags.
+The Wavefront StatsD backend emits StatsD metrics to Wavefront. It also extends StatsD by allowing point tags.
 
 ## Installation
 
