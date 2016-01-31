@@ -12,7 +12,8 @@ This readme assumes you've already downloaded [statsd](https://github.com/etsy/s
 3. Update `config.js` to use the backend.
 
 ### Running in Docker
-A Dockerfile is provided that will install the latest version of both StatsD and the wavefront backend in an ubuntu container.
+A Dockerfile is provided that will install the latest version of both StatsD and the Wavefront backend in an ubuntu container.
+
 1. Build it: `docker build -t wavefronthq/statsd https://github.com/wavefrontHQ/StatsD.git#master:docker`
 2. Run it: `docker run -d -p 8125:8125 --name statsd -v /pathtoyourconfig/config.js:/opt/statsd/config.js wavefronthq/statsd`
 
