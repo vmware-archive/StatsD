@@ -185,7 +185,7 @@ exports.init = function wavefrontInit(startup_time, config, events) {
   prefixTimer   = prefixTimer !== undefined ? prefixTimer : "timers";
   prefixGauge   = prefixGauge !== undefined ? prefixGauge : "gauges";
   prefixSet     = prefixSet !== undefined ? prefixSet : "sets";
-  legacyNamespace = legacyNamespace !== undefined ? legacyNamespace : true;
+  legacyNamespace = legacyNamespace !== undefined ? legacyNamespace : false;
 
 
   if (legacyNamespace === false) {
