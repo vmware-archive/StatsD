@@ -18,7 +18,7 @@ var prefixGauge;
 var prefixSet;
 
 // set up namespaces
-var legacyNamespace = true;
+var legacyNamespace = false;
 var globalNamespace  = [];
 var counterNamespace = [];
 var timerNamespace   = [];
