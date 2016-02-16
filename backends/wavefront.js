@@ -117,7 +117,7 @@ var flushStats = function wavefrontFlush(ts, metrics) {
 
         var namespace = timerNamespace.concat(strippedKey);
         var the_key = namespace.join(".");
-        statString += 'put ' + the_key + '.' + timerData_key + ' ' + ts + ' ' + timerData[key][timerData_key] + ' ' + tags.join(' ') + suffix;
+        statString += the_key + '.' + timerData_key + ' ' + timerData[key][timerData_key] + ts + ' ' + tags.join(' ') + suffix;
       }
 
       numStats += 1;
