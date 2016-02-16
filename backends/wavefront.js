@@ -90,7 +90,7 @@ var flushStats = function wavefrontFlush(ts, metrics) {
   var gauges = metrics.gauges;
   var timers = metrics.timers;
   var sets = metrics.sets;
-  var timerData = metrics.timerData;
+  var timerData = metrics.timer_data;
   var statsd_metrics = metrics.statsd_metrics;
 
   for (key in counters) {
