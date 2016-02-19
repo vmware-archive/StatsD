@@ -37,3 +37,7 @@ echo "test.timer1_t_source_v_mysource_t_mytag_v_myval:10|ms" | nc -u -w0 localho
 # A counter with tags
 echo "test.counter1_t_source_v_mysource_t_mytag_v_myval:1|c" | nc -u -w0 localhost 8125
 ```
+## Limitations
+
+This sink does not currently support the use of periods in tag names or values. We're working on a performant solution to this.
+
