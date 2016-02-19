@@ -34,14 +34,15 @@ class WavefrontStore(object):
         self.attempts = attempts
         self.sock = self._create_socket()
     
-    def remove_tags(k1,k2): 
-        if "~" in k2: 
-          keyparts = k2.split("~")
+    def remove_tags(k1,k2):
+        k = k2.replace("<","less_")
+        k = k.replace(">","greater_")
+        if "~" in k:
+          keyparts = k.split("~")
           key = keyparts[0] + keyparts[-1]
           return key
         else:
-          return k2
-    
+          return k
 
     def parse_tags(k1,k2):
         if "~" in k2: 
