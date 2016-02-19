@@ -13,7 +13,7 @@ stream_cmd = python sinks/wavefront.py localhost 2878
 
 ## Using with Tags
 
-Tags can be added to a metric by adding flags to the metric name. `_t_` flags the start of a tag name. `_v_` flags the start of a metric value.
+Tags can be added to a metric by adding flags to the metric name. `_t_` flags the start of a tag name. `_v_` flags the start of a tag value.
 
 For example, to add a tag to a gauge named `gauge1`:
 
