@@ -13,11 +13,11 @@ stream_cmd = python sinks/wavefront.py localhost 2878
 
 ## Using with Tags
 
-Tags can be added to a metric by adding flags to the metric name. `_t_` flags the start of a tag name. `_v_` flags the start of a tag value.
+Tags can be added to a metric by adding a `~` to the beginning and end of a tag key value pair.
 
 For example, to add a tag to a gauge named `gauge1`:
 
-`echo "test.gauge1_t_source_v_mysource:+3|g" | nc -u -w0 localhost 8125`
+`echo "test.gauge1~source=mysource~:+3|g" | nc -u -w0 localhost 8125`
 
 This will produce a metric named `statsite.gauges.test.gauge1` with a tag `source=mysource`.
 
@@ -26,18 +26,14 @@ This will produce a metric named `statsite.gauges.test.gauge1` with a tag `sourc
 echo "test.gauge1:+3|g" | nc -u -w0 localhost 8125
 
 # A gauge with a source tag
-echo "test.gauge1_t_source_v_mysource:+3|g" | nc -u -w0 localhost 8125
+echo "test.gauge1~source=mysource~:+3|g" | nc -u -w0 localhost 8125
 
 # A gauge with a source tag and another tag
-echo "test.gauge1_t_source_v_mysource_t_mytag_v_myval:+3|g" | nc -u -w0 localhost 8125
+echo "test.gauge1~source=mysource~mytag=myval~:+3|g" | nc -u -w0 localhost 8125
 
 # A timer with tags
-echo "test.timer1_t_source_v_mysource_t_mytag_v_myval:10|ms" | nc -u -w0 localhost 8125
+echo "test.timer1source_v_mysource_t_mytag_v_myval:10|ms" | nc -u -w0 localhost 8125
 
 # A counter with tags
 echo "test.counter1_t_source_v_mysource_t_mytag_v_myval:1|c" | nc -u -w0 localhost 8125
 ```
-## Limitations
-
-This sink does not currently support the use of periods in tag names or values. We're working on a performant solution to this.
-
