@@ -88,8 +88,6 @@ class WavefrontStore(object):
             lines = ["%s %s %s %s" % (self.remove_tags(k), v, ts, self.parse_tags(k)) for k, v, ts in metrics]
         data = "\n".join(lines) + "\n"
 
-        print data
-
         # Serialize writes to the socket
         try:
             self._write_metric(data)
