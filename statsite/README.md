@@ -5,7 +5,7 @@ Statsite is a metric aggregation server heavily based on StatsD but written in C
 
 ## Installation
 
-Copy `wavefront.py` from this directory to `statsite/sinks`. It can be used exactly like the graphite sink, except it should be pointed at your Wavefront proxy:
+Copy `wavefront.py` from this directory to `statsite/sinks`. It can be used exactly like the graphite sink, except it should be pointed at your Wavefront proxy within your statsite config:
 
 ```
 stream_cmd = python sinks/wavefront.py localhost 2878
