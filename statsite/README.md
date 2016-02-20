@@ -23,17 +23,17 @@ This will produce a metric named `statsite.gauges.test.gauge1` with a tag `sourc
 
 ```
 # A gauge with no tag
-echo "test.gauge1:+3|g" | nc -u -w0 localhost 8125
+echo "test.gauge1:+3|g" | nc -t -w0 localhost 8125
 
 # A gauge with a source tag
-echo "test.gauge1~source=mysource~:+3|g" | nc -u -w0 localhost 8125
+echo "test.gauge1~source=mysource~:+3|g" | nc -t -w0 localhost 8125
 
 # A gauge with a source tag and another tag
-echo "test.gauge1~source=mysource~mytag=myval~:+3|g" | nc -u -w0 localhost 8125
+echo "test.gauge1~source=mysource~mytag=myval~:+3|g" | nc -t -w0 localhost 8125
 
 # A timer with tags
-echo "test.timer1~source=mysource~mytag=myval~:10|ms" | nc -u -w0 localhost 8125
+echo "test.timer1~source=mysource~mytag=myval~:10|ms" | nc -t -w0 localhost 8125
 
 # A counter with tags
-echo "test.counter1~source=mysource~mytag=myval~:1|c" | nc -u -w0 localhost 8125
+echo "test.counter1~source=mysource~mytag=myval~:1|c" | nc -t -w0 localhost 8125
 ```
