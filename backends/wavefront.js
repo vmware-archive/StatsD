@@ -28,6 +28,9 @@ var setsNamespace     = [];
 var wavefrontStats = {};
 
 var postStats = function wavefrontPostStats(statString) {
+	
+  console.log(statString)
+	
   var last_flush = wavefrontStats.last_flush || 0;
   var last_exception = wavefrontStats.last_exception || 0;
   if (wavefrontHost) {
