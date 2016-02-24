@@ -33,8 +33,8 @@ Below is an example of a complete config.js for using the Wavefront backend.
 , backends: ["./backends/wavefront"]
 , wavefrontHost: '192.168.99.100'
 , wavefrontPort: 2878
-, wavefrontTagPrefix: '_t_'
-, defaultSource: "statsd"
+, wavefrontTagPrefix: '~'
+, keyNameSanitize: false
 }
 ```
 
@@ -47,10 +47,10 @@ By default, you can send metrics through StatsD as follows:
 echo "gauge1:+3|g" | nc -u -w0 192.168.99.100 8125
 ```
 
-The Wavefront backend supports tagging by adding `_t_` (tag) and `_v_` (tag value) flags to your metric names. For example:
+The Wavefront backend supports tagging by allowing you to pass tags as part of the metric name. In order to support this, they `keyNameSanitize` config option must be set to `false` in your config. For example:
 
 ```
-echo "gauge1_t_tag1_v_v1_t_tag2_v_v2:+3|g" | nc -u -w0 192.168.99.100 8125
+echo "gauge1~tag1=v1~tag2=v2:+3|g" | nc -u -w0 192.168.99.100 8125
 ```
 This will produce a metric that looks like:
 ```
