@@ -60,7 +60,7 @@ var postStats = function wavefrontPostStats(statString) {
   }
 }
 
-function parseTags(metricName) {
+function parseTagsOld(metricName) {
   var tags = [];
   var tagParts = metricName.split(wavefrontTagPrefix);
   for (var i=1;i<tagParts.length;i++) {
@@ -68,6 +68,18 @@ function parseTags(metricName) {
     var tag = tagAndVal[0];
     var val = tagAndVal[1];
     tags.push(tag+"="+val);
+  }
+  return tags;
+}
+
+function parseTags(metricName) {
+  var tags = [];
+  //stats.gauges.gauge1~tag=val~tag2=val2
+  var tagParts = metricName.split(wavefrontTagPrefix);
+  for (var i=1;i<tagParts.length;i++) {
+    if (i > 0) {
+      tags.push(tagParts[i]);	
+    }
   }
   return tags;
 }
