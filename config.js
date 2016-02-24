@@ -102,6 +102,6 @@ Optional Variables:
 , backends: ["./backends/wavefront"]
 , wavefrontHost: '192.168.99.100'
 , wavefrontPort: 2878
-, wavefrontTagPrefix: '_t_'
-, defaultSource: "evan.macbook.dockerhost"
+, wavefrontTagPrefix: '~'
+, keyNameSanitize: false
 }
