@@ -7,7 +7,6 @@ var flushInterval;
 var wavefrontHost;
 var wavefrontPort;
 var wavefrontTagPrefix;
-var defaultSource;
 
 // prefix configuration
 var globalPrefix;
@@ -93,9 +92,6 @@ function stripTags(metricName) {
 
 var flushStats = function wavefrontFlush(ts, metrics) {
   var suffix = "\n";
-  if (defaultSource) {
-   suffix = " source=" + defaultSource + "\n"; 
-  }
   var starttime = Date.now();
   var statString = '';
   var numStats = 0;
@@ -185,7 +181,6 @@ exports.init = function wavefrontInit(startup_time, config, events) {
   wavefrontHost = config.wavefrontHost;
   wavefrontPort = config.wavefrontPort;
   wavefrontTagPrefix = config.wavefrontTagPrefix;
-  defaultSource = config.defaultSource;
   config.wavefront = config.wavefront || {};
   globalPrefix    = config.wavefront.globalPrefix;
   prefixCounter   = config.wavefront.prefixCounter;
