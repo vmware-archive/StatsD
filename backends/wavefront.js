@@ -28,8 +28,6 @@ var wavefrontStats = {};
 
 var postStats = function wavefrontPostStats(statString) {
 	
-  console.log(statString)
-	
   var last_flush = wavefrontStats.last_flush || 0;
   var last_exception = wavefrontStats.last_exception || 0;
   if (wavefrontHost) {
@@ -57,18 +55,6 @@ var postStats = function wavefrontPostStats(statString) {
       wavefrontStats.last_exception = Math.round(new Date().getTime() / 1000);
     }
   }
-}
-
-function parseTagsOld(metricName) {
-  var tags = [];
-  var tagParts = metricName.split(wavefrontTagPrefix);
-  for (var i=1;i<tagParts.length;i++) {
-    var tagAndVal = tagParts[i].split("_v_");
-    var tag = tagAndVal[0];
-    var val = tagAndVal[1];
-    tags.push(tag+"="+val);
-  }
-  return tags;
 }
 
 function parseTags(metricName) {
