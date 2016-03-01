@@ -55,7 +55,7 @@ gauge1:+3
 
 Metrics are sent to Wavefront in the Wavefront format. See the "Wavefront Data Format" in our knowledgebase for more information.
 
-### Running in Docker
+### Running in Docker (Optional)
 A Dockerfile is provided that will install the latest version of both StatsD and the Wavefront backend in an ubuntu container. In order to provide your own config out of the box, you have to mount a volume as shown in step #2:
 
 1. Build it: `docker build -t wavefronthq/statsd https://github.com/wavefrontHQ/StatsD.git#master:docker`
