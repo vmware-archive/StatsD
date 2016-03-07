@@ -41,7 +41,7 @@ By default, you can send metrics through StatsD as follows:
 echo "gauge1:+3|g" | nc -u -w0 192.168.99.100 8125
 ```
 
-The Wavefront backend supports tagging by allowing you to pass tags as part of the metric name. In order to support this, they `keyNameSanitize` config option must be set to `false` in your config. For example:
+The Wavefront backend supports tagging by allowing you to pass tags as part of the metric name. In order to support this, the `keyNameSanitize` config option must be set to `false` in your config. For example:
 
 ```
 echo "gauge1~tag1=v1~tag2=v2:+3|g" | nc -u -w0 192.168.99.100 8125
