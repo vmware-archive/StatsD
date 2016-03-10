@@ -7,6 +7,7 @@ var flushInterval;
 var wavefrontHost;
 var wavefrontPort;
 var wavefrontTagPrefix;
+var defaultSource;
 
 // prefix configuration
 var globalPrefix;
@@ -65,6 +66,10 @@ function parseTags(metricName) {
     if (i > 0) {
       tags.push(tagParts[i]);	
     }
+  }
+ 
+  if (("|" + tags.join("|")).indexOf("|source=") == -1) {
+    tags.push("source="+defaultSource);
   }
   return tags;
 }
@@ -147,10 +152,11 @@ var flushStats = function wavefrontFlush(ts, metrics) {
       statString += 'stats.statsd.' + key + ' ' + statsd_metrics[key] + ' ' + ts + suffix;
     }
   } else {
-    statString += namespace.join(".") + '.numStats ' + numStats + ' ' + ts + suffix;
+	//manually add source tag
+    statString += namespace.join(".") + '.numStats ' + numStats + ts + ' source='+defaultSource + ' ' + suffix;
     for (key in statsd_metrics) {
       var the_key = namespace.concat(key);
-      statString += the_key.join(".") + ' ' + statsd_metrics[key] + ' ' + ts + suffix;
+      statString += the_key.join(".") + ' ' + statsd_metrics[key] + ts + ' source='+defaultSource + ' ' + suffix;
     }
   }
   postStats(statString);
@@ -166,6 +172,7 @@ exports.init = function wavefrontInit(startup_time, config, events) {
   debug = config.debug;
   wavefrontHost = config.wavefrontHost;
   wavefrontPort = config.wavefrontPort;
+  defaultSource = config.defaultSource;
   wavefrontTagPrefix = config.wavefrontTagPrefix;
   config.wavefront = config.wavefront || {};
   globalPrefix    = config.wavefront.globalPrefix;
@@ -173,7 +180,9 @@ exports.init = function wavefrontInit(startup_time, config, events) {
   prefixTimer     = config.wavefront.prefixTimer;
   prefixGauge     = config.wavefront.prefixGauge;
   prefixSet       = config.wavefront.prefixSet;
-  legacyNamespace = config.wavefront.legacyNamespace;
+  
+  //LegacyNamespace support is depricated!	
+  //legacyNamespace = config.wavefront.legacyNamespace;
 
   // set defaults for prefixes
   globalPrefix  = globalPrefix !== undefined ? globalPrefix : "stats";
