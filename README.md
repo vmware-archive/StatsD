@@ -17,8 +17,7 @@ The backend expects the following parameters:
 - wavefrontHost - The host on your network that is running the Wavefront proxy.
 - wavefrontPort - The port that your Wavefront proxy is listening on.
 - wavefrontTagPrefix - The prefix for point tags (see Tagging Metrics below).
-- defaultSource - The source tag that will get added to metrics as they're sent to Wavefront.
-
+- defaultSource - The source tag that will get added to metrics as they're sent to Wavefront if one is not provided. This is a required parameter.
 
 Below is an example of a complete config.js for using the Wavefront backend.
 ```
@@ -29,6 +28,7 @@ Below is an example of a complete config.js for using the Wavefront backend.
 , wavefrontPort: 2878
 , wavefrontTagPrefix: '~'
 , keyNameSanitize: false
+, defaultSource: 'statsd'
 }
 ```
 
