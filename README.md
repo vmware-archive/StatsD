@@ -55,6 +55,10 @@ gauge1:+3
 
 Metrics are sent to Wavefront in the Wavefront format. See the "Wavefront Data Format" in our knowledgebase for more information.
 
+### Requirements
+
+The Wavefront backend will work with any recent copy of StatsD. It will not work with version 0.7.2 or before as the `keynameSanitize` option was not added until ~ Feb 2015.
+
 ### Running in Docker (Optional)
 A Dockerfile is provided that will install the latest version of both StatsD and the Wavefront backend in an ubuntu container. In order to provide your own config out of the box, you have to mount a volume as shown in step #2:
 
