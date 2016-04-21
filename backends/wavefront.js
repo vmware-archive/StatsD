@@ -28,7 +28,7 @@ var setsNamespace     = [];
 var wavefrontStats = {};
 
 var postStats = function wavefrontPostStats(statString) {
-	
+
   var last_flush = wavefrontStats.last_flush || 0;
   var last_exception = wavefrontStats.last_exception || 0;
   if (wavefrontHost) {
@@ -64,10 +64,10 @@ function parseTags(metricName) {
   var tagParts = metricName.split(wavefrontTagPrefix);
   for (var i=1;i<tagParts.length;i++) {
     if (i > 0) {
-      tags.push(tagParts[i]);	
+      tags.push(tagParts[i]);
     }
   }
- 
+
   if (("|" + tags.join("|")).indexOf("|source=") == -1) {
     tags.push("source="+defaultSource);
   }
@@ -82,6 +82,7 @@ function stripTags(metricName) {
 
 
 var flushStats = function wavefrontFlush(ts, metrics) {
+
   var suffix = "\n";
   var starttime = Date.now();
   var statString = '';
@@ -119,7 +120,8 @@ var flushStats = function wavefrontFlush(ts, metrics) {
 
         var namespace = timerNamespace.concat(strippedKey);
         var the_key = namespace.join(".");
-        statString += the_key + '.' + timerData_key + ' ' + timerData[key][timerData_key] + ts + ' ' + tags.join(' ') + suffix;
+
+        statString += the_key + '.' + timerData_key + ' ' + timerData[key][timerData_key] + ' ' + ts + ' ' + tags.join(' ') + suffix;
       }
 
       numStats += 1;
@@ -180,8 +182,8 @@ exports.init = function wavefrontInit(startup_time, config, events) {
   prefixTimer     = config.wavefront.prefixTimer;
   prefixGauge     = config.wavefront.prefixGauge;
   prefixSet       = config.wavefront.prefixSet;
-  
-  //LegacyNamespace support is depricated!	
+
+  //LegacyNamespace support is depricated!
   //legacyNamespace = config.wavefront.legacyNamespace;
 
   // set defaults for prefixes
