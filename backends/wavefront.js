@@ -64,10 +64,13 @@ function parseTags(metricName) {
   var tagParts = metricName.split(wavefrontTagPrefix);
   for (var i=1;i<tagParts.length;i++) {
     if (i > 0) {
+      //does the tag have a value?
+      if (tagParts[i].substr(-1) === "=") {
+        continue;
+      }
       tags.push(tagParts[i]);
     }
   }
-
   if (("|" + tags.join("|")).indexOf("|source=") == -1) {
     tags.push("source="+defaultSource);
   }
