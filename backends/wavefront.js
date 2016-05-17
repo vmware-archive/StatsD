@@ -97,7 +97,21 @@ function extractSourceTagValue(metricName, prefix) {
 
 // Strips tags out of metric name
 function stripTags(metricName) {
-  return metricName.split(wavefrontTagPrefix)[0];
+  var new_key = metricName.split(wavefrontTagPrefix)[0];
+
+  //remove source tag from key if graphiteSourceStartsWith is set
+  if (graphiteSourceStartsWith != undefined && new_key.indexOf(graphiteSourceStartsWith) > -1) {
+    var parts = new_key.split(".");
+    var deleteIndex = undefined;
+    for (var i=0;i<parts.length;i++) {
+      if (parts[i].indexOf(graphiteSourceStartsWith) > -1) {
+        deleteIndex = i
+      }
+    }
+    parts.splice(deleteIndex,1);
+    new_key = parts.join(".");
+  }
+  return new_key
 }
 
 
@@ -180,6 +194,7 @@ var flushStats = function wavefrontFlush(ts, metrics) {
       statString += the_key.join(".") + ' ' + statsd_metrics[key] + ts + ' source='+defaultSource + ' ' + suffix;
     }
   }
+  console.log(statString);
   postStats(statString);
 };
 
