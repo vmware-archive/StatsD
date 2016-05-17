@@ -8,6 +8,7 @@ var wavefrontHost;
 var wavefrontPort;
 var wavefrontTagPrefix;
 var defaultSource;
+var graphiteSourceStartsWith;
 
 // prefix configuration
 var globalPrefix;
@@ -71,12 +72,28 @@ function parseTags(metricName) {
       tags.push(tagParts[i]);
     }
   }
-  if (("|" + tags.join("|")).indexOf("|source=") == -1) {
-    tags.push("source="+defaultSource);
+  //does this metric have a source tag?
+  if (("|" + tags.join("|")).indexOf("|source=") == -1) { // no
+    //is graphiteSourceStartsWith set?
+    if (graphiteSourceStartsWith != undefined && metricName.indexOf(graphiteSourceStartsWith) > -1) { //yes
+      //extract source from metric name
+      tags.push("source="+extractSourceTagValue(metricName,graphiteSourceStartsWith));
+    } else {
+      tags.push("source="+defaultSource);
+    }
   }
   return tags;
 }
 
+// Extracts a source tag from parts of a metic value based on a prefix
+function extractSourceTagValue(metricName, prefix) {
+  parts = metricName.split(".")
+  for (var i=0;i<parts.length;i++) {
+    if (parts[i].indexOf(prefix) > -1) {
+      return parts[i];
+    }
+  }
+}
 
 // Strips tags out of metric name
 function stripTags(metricName) {
@@ -126,7 +143,6 @@ var flushStats = function wavefrontFlush(ts, metrics) {
 
         statString += the_key + '.' + timerData_key + ' ' + timerData[key][timerData_key] + ' ' + ts + ' ' + tags.join(' ') + suffix;
       }
-
       numStats += 1;
     }
   }
@@ -179,6 +195,7 @@ exports.init = function wavefrontInit(startup_time, config, events) {
   wavefrontPort = config.wavefrontPort;
   defaultSource = config.defaultSource;
   wavefrontTagPrefix = config.wavefrontTagPrefix;
+  graphiteSourceStartsWith = config.graphiteSourceStartsWith;
   config.wavefront = config.wavefront || {};
   globalPrefix    = config.wavefront.globalPrefix;
   prefixCounter   = config.wavefront.prefixCounter;
