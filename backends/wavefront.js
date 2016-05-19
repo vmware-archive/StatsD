@@ -111,6 +111,12 @@ function stripTags(metricName) {
     parts.splice(deleteIndex,1);
     new_key = parts.join(".");
   }
+
+  //make sure the key doesn't have ".."
+  if (new_key.indexOf("..") > -1) {
+    new_key = new_key.replace("..",".");
+  }
+
   return new_key
 }
 
@@ -194,7 +200,7 @@ var flushStats = function wavefrontFlush(ts, metrics) {
       statString += the_key.join(".") + ' ' + statsd_metrics[key] + ts + ' source='+defaultSource + ' ' + suffix;
     }
   }
-  console.log(statString);
+  //console.log(statString);
   postStats(statString);
 };
 
