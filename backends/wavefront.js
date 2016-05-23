@@ -117,6 +117,11 @@ function stripTags(metricName) {
     new_key = new_key.replace("..",".");
   }
 
+  //make sure the key doesn't start with "."
+  if (new_key.substr(0,1) == ".") {
+    new_key = new_key.substr(1,new_key.length-1)
+  }
+
   return new_key
 }
 
