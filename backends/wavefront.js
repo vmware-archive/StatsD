@@ -125,10 +125,13 @@ function stripTags(metricName) {
   return new_key
 }
 
+function makeStat(key, value, ts, tags) {
+  return key + ' ' + value + ' ' + ts + ' ' + tags.join(' ') + "\n";
+}
+
 
 var flushStats = function wavefrontFlush(ts, metrics) {
 
-  var suffix = "\n";
   var starttime = Date.now();
   var statString = '';
   var numStats = 0;
@@ -149,9 +152,9 @@ var flushStats = function wavefrontFlush(ts, metrics) {
     var value = counters[key];
 
     if (legacyNamespace === true) {
-      statString += 'stats_counts.' + key + ' ' + value + ' ' + ts + ' ' + tags.join(' ') + suffix;
+      statString += makeStat('stats_counts.' + key, value, ts, tags);
     } else {
-      statString += namespace.concat('count').join(".") + ' ' + value + ' ' + ts + ' ' + tags.join(' ') + suffix;
+      statString += makeStat(namespace.concat('count').join("."), value, ts, tags);
     }
 
     numStats += 1;
@@ -166,7 +169,7 @@ var flushStats = function wavefrontFlush(ts, metrics) {
         var namespace = timerNamespace.concat(strippedKey);
         var the_key = namespace.join(".");
 
-        statString += the_key + '.' + timerData_key + ' ' + timerData[key][timerData_key] + ' ' + ts + ' ' + tags.join(' ') + suffix;
+        statString += makeStat(the_key + '.' + timerData_key, timerData[key][timerData_key], ts, tags);
       }
       numStats += 1;
     }
@@ -177,7 +180,7 @@ var flushStats = function wavefrontFlush(ts, metrics) {
     var strippedKey = stripTags(key)
 
     var namespace = gaugesNamespace.concat(strippedKey);
-    statString += namespace.join(".") + ' ' + gauges[key] + ' ' + ts + ' ' + tags.join(' ') + suffix;
+    statString += makeStat(namespace.join("."), gauges[key], ts, tags);
     numStats += 1;
   }
 
@@ -186,23 +189,24 @@ var flushStats = function wavefrontFlush(ts, metrics) {
     var strippedKey = stripTags(key)
 
     var namespace = setsNamespace.concat(strippedKey);
-    statString += namespace.join(".") + '.count ' + sets[key].values().length + ' ' + ts + ' ' + tags.join(' ') + suffix;
+    statString += makeStat(namespace.join(".") + '.count', sets[key].values().length, ts, tags);
     numStats += 1;
   }
 
   var namespace = globalNamespace.concat('statsd');
   if (legacyNamespace === true) {
-    statString += 'statsd.numStats ' + numStats + ' ' + ts + suffix;
-    statString += 'stats.statsd.wavefrontStats.calculationtime ' + (Date.now() - starttime) + ' ' + ts + suffix;
+    statString += makeStat('statsd.numStats', numStats, ts, []);
+    statString += makeStat('stats.statsd.wavefrontStats.calculationtime', Date.now() - starttime, ts, []);
     for (key in statsd_metrics) {
-      statString += 'stats.statsd.' + key + ' ' + statsd_metrics[key] + ' ' + ts + suffix;
+      statString += makeStat('stats.statsd.' + key, statsd_metrics[key], ts, []);
     }
   } else {
-	//manually add source tag
-    statString += namespace.join(".") + '.numStats ' + numStats + ts + ' source='+defaultSource + ' ' + suffix;
+    //manually add source tag
+    var defaultSourceTag = ['source=' + defaultSource];
+    statString += makeStat(namespace.join(".") + '.numStats', numStats, ts, defaultSourceTag);
     for (key in statsd_metrics) {
       var the_key = namespace.concat(key);
-      statString += the_key.join(".") + ' ' + statsd_metrics[key] + ts + ' source='+defaultSource + ' ' + suffix;
+      statString += makeStat(the_key.join("."), statsd_metrics[key], ts,  defaultSourceTag);
     }
   }
   //console.log(statString);
