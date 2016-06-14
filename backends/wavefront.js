@@ -1,6 +1,7 @@
 
 var net = require('net'),
-   util = require('util');
+   util = require('util'),
+   os = require('os');
 
 var debug;
 var flushInterval;
@@ -228,6 +229,11 @@ exports.init = function wavefrontInit(startup_time, config, events) {
   prefixTimer     = config.wavefront.prefixTimer;
   prefixGauge     = config.wavefront.prefixGauge;
   prefixSet       = config.wavefront.prefixSet;
+
+  //use hostname of this server if defaultSource is not set
+  if (defaultSource == undefined) {
+    defaultSource = os.hostname()
+  }
 
   //LegacyNamespace support is depricated!
   //legacyNamespace = config.wavefront.legacyNamespace;
