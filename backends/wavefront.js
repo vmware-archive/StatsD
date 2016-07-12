@@ -101,28 +101,30 @@ function stripTags(metricName) {
   var new_key = metricName.split(wavefrontTagPrefix)[0];
 
   //remove source tag from key if graphiteSourceStartsWith is set
-  if (graphiteSourceStartsWith != undefined && new_key.indexOf(graphiteSourceStartsWith) > -1) {
-    var parts = new_key.split(".");
-    var deleteIndex = undefined;
-    for (var i=0;i<parts.length;i++) {
-      if (parts[i].indexOf(graphiteSourceStartsWith) > -1) {
-        deleteIndex = i
+
+  if (keepSourcePart != undefined && keepSourcePart == false) {
+    if (graphiteSourceStartsWith != undefined && new_key.indexOf(graphiteSourceStartsWith) > -1) {
+      var parts = new_key.split(".");
+      var deleteIndex = undefined;
+      for (var i=0;i<parts.length;i++) {
+        if (parts[i].indexOf(graphiteSourceStartsWith) > -1) {
+          deleteIndex = i
+        }
       }
+      parts.splice(deleteIndex,1);
+      new_key = parts.join(".");
     }
-    parts.splice(deleteIndex,1);
-    new_key = parts.join(".");
-  }
 
-  //make sure the key doesn't have ".."
-  if (new_key.indexOf("..") > -1) {
-    new_key = new_key.replace("..",".");
-  }
+    //make sure the key doesn't have ".."
+    if (new_key.indexOf("..") > -1) {
+      new_key = new_key.replace("..",".");
+    }
 
-  //make sure the key doesn't start with "."
-  if (new_key.substr(0,1) == ".") {
-    new_key = new_key.substr(1,new_key.length-1)
+    //make sure the key doesn't start with "."
+    if (new_key.substr(0,1) == ".") {
+      new_key = new_key.substr(1,new_key.length-1)
+    }
   }
-
   return new_key
 }
 
@@ -223,6 +225,7 @@ exports.init = function wavefrontInit(startup_time, config, events) {
   defaultSource = config.defaultSource;
   wavefrontTagPrefix = config.wavefrontTagPrefix;
   graphiteSourceStartsWith = config.graphiteSourceStartsWith;
+  keepSourcePart = config.keepSourcePart;
   config.wavefront = config.wavefront || {};
   globalPrefix    = config.wavefront.globalPrefix;
   prefixCounter   = config.wavefront.prefixCounter;
