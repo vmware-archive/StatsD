@@ -28,7 +28,6 @@ Below is an example of a complete config.js for using the Wavefront backend.
 , wavefrontPort: 2878
 , wavefrontTagPrefix: '~'
 , keyNameSanitize: false
-, defaultSource: 'statsd'
 }
 ```
 
