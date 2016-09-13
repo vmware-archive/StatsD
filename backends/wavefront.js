@@ -10,6 +10,8 @@ var wavefrontPort;
 var wavefrontTagPrefix;
 var defaultSource;
 var graphiteSourceStartsWith;
+var skipZeroCounters;
+var skipZeroTimers;
 
 // prefix configuration
 var globalPrefix;
@@ -151,6 +153,10 @@ var flushStats = function wavefrontFlush(ts, metrics) {
     var namespace = counterNamespace.concat(strippedKey);
     var value = counters[key];
 
+    if (skipZeroCounters && value == "0") {
+      continue;
+    }
+
     if (legacyNamespace === true) {
       statString += 'stats_counts.' + key + ' ' + value + ' ' + ts + ' ' + tags.join(' ') + suffix;
     } else {
@@ -169,7 +175,13 @@ var flushStats = function wavefrontFlush(ts, metrics) {
         var namespace = timerNamespace.concat(strippedKey);
         var the_key = namespace.join(".");
 
-        statString += the_key + '.' + timerData_key + ' ' + timerData[key][timerData_key] + ' ' + ts + ' ' + tags.join(' ') + suffix;
+        var value = timerData[key][timerData_key];
+
+        if (skipZeroTimers && value == "0") {
+          continue;
+        }
+
+        statString += the_key + '.' + timerData_key + ' ' + value + ' ' + ts + ' ' + tags.join(' ') + suffix;
       }
       numStats += 1;
     }
@@ -226,6 +238,10 @@ exports.init = function wavefrontInit(startup_time, config, events) {
   wavefrontTagPrefix = config.wavefrontTagPrefix;
   graphiteSourceStartsWith = config.graphiteSourceStartsWith;
   keepSourcePart = config.keepSourcePart;
+  skipZeroCounters = config.skipZeroCounters;
+  skipZeroTimers = config.skipZeroTimers;
+
+
   config.wavefront = config.wavefront || {};
   globalPrefix    = config.wavefront.globalPrefix;
   prefixCounter   = config.wavefront.prefixCounter;
