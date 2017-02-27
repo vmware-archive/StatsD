@@ -1,7 +1,7 @@
 
 This repository contains a Wavefront backend for Etsy's popular StatsD implementation written in NodeJS.
 
-We now recommend using Telegraf's StatsD service plugin if you're not already using a StatsD server. You can learn how to use it with Wavefront [here](We now recommend using Telegraf's StatsD service plugin.).
+We now recommend using Telegraf's StatsD service plugin if you're not already using a StatsD server. You can learn how to use it with Wavefront [here](https://community.wavefront.com/docs/DOC-1036).
 
 # Wavefront StatsD Backend (NodeJS)
 
