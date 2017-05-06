@@ -127,7 +127,9 @@ function stripTags(metricName) {
       new_key = new_key.substr(1,new_key.length-1)
     }
   }
-  return new_key
+  return new_key.replace(/\s+/g, '_')
+                .replace(/\//g, '-')
+                .replace(/[^a-zA-Z_\-0-9\.]/g, '');
 }
 
 
@@ -140,6 +142,7 @@ var flushStats = function wavefrontFlush(ts, metrics) {
   var key;
   var timerData_key;
   var counters = metrics.counters;
+  var counter_rates = metrics.counter_rates;
   var gauges = metrics.gauges;
   var timers = metrics.timers;
   var sets = metrics.sets;
@@ -152,13 +155,15 @@ var flushStats = function wavefrontFlush(ts, metrics) {
 
     var namespace = counterNamespace.concat(strippedKey);
     var value = counters[key];
+    var valuePerSecond = counter_rates[key]; // pre-calculated "per second" rate
 
     if (skipZeroCounters && value == "0") {
       continue;
     }
 
     if (legacyNamespace === true) {
-      statString += 'stats_counts.' + key + ' ' + value + ' ' + ts + ' ' + tags.join(' ') + suffix;
+      statString += 'stats_counts.' + strippedKey + ' ' + value + ' ' + ts + ' ' + tags.join(' ') + suffix;
+      statString += namespace.join(".") + ' ' + valuePerSecond + ' ' + ts + ' ' + tags.join(' ') + suffix;
     } else {
       statString += namespace.concat('count').join(".") + ' ' + value + ' ' + ts + ' ' + tags.join(' ') + suffix;
     }
@@ -214,10 +219,10 @@ var flushStats = function wavefrontFlush(ts, metrics) {
     }
   } else {
 	//manually add source tag
-    statString += namespace.join(".") + '.numStats ' + numStats + ts + ' source='+defaultSource + ' ' + suffix;
+    statString += namespace.join(".") + '.numStats ' + numStats + ' ' + ts + ' source='+defaultSource + ' ' + suffix;
     for (key in statsd_metrics) {
       var the_key = namespace.concat(key);
-      statString += the_key.join(".") + ' ' + statsd_metrics[key] + ts + ' source='+defaultSource + ' ' + suffix;
+      statString += the_key.join(".") + ' ' + statsd_metrics[key] + ' ' + ts + ' source='+defaultSource + ' ' + suffix;
     }
   }
   //console.log(statString);
@@ -240,6 +245,7 @@ exports.init = function wavefrontInit(startup_time, config, events) {
   keepSourcePart = config.keepSourcePart;
   skipZeroCounters = config.skipZeroCounters;
   skipZeroTimers = config.skipZeroTimers;
+  globalKeySanitize = config.keyNameSanitize;
 
 
   config.wavefront = config.wavefront || {};
@@ -254,8 +260,7 @@ exports.init = function wavefrontInit(startup_time, config, events) {
     defaultSource = os.hostname()
   }
 
-  //LegacyNamespace support is depricated!
-  //legacyNamespace = config.wavefront.legacyNamespace;
+  legacyNamespace = config.wavefront.legacyNamespace;
 
   // set defaults for prefixes
   globalPrefix  = globalPrefix !== undefined ? globalPrefix : "stats";
