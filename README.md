@@ -1,3 +1,4 @@
+# NB This project is considered depcrecated. Please see Integrations --> Statsd within the Wavefront UI.
 
 This repository contains a Wavefront backend for Etsy's popular StatsD implementation written in NodeJS.
 
