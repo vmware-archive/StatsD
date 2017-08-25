@@ -213,10 +213,10 @@ var flushStats = function wavefrontFlush(ts, metrics) {
 
   var namespace = globalNamespace.concat('statsd');
   if (legacyNamespace === true) {
-    statString += 'statsd.numStats ' + numStats + ' ' + ts + suffix;
-    statString += 'stats.statsd.wavefrontStats.calculationtime ' + (Date.now() - starttime) + ' ' + ts + suffix;
+    statString += 'statsd.numStats ' + numStats + ' ' + ts + ' ' + suffix;
+    statString += 'stats.statsd.wavefrontStats.calculationtime ' + (Date.now() - starttime) + ' ' + ts + ' ' + suffix;
     for (key in statsd_metrics) {
-      statString += 'stats.statsd.' + key + ' ' + statsd_metrics[key] + ' ' + ts + suffix;
+      statString += 'stats.statsd.' + key + ' ' + statsd_metrics[key] + ' ' + ts + ' ' + suffix;
     }
   } else {
 	//manually add source tag
