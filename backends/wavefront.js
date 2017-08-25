@@ -166,6 +166,7 @@ var flushStats = function wavefrontFlush(ts, metrics) {
       statString += namespace.join(".") + ' ' + valuePerSecond + ' ' + ts + ' ' + tags.join(' ') + suffix;
     } else {
       statString += namespace.concat('count').join(".") + ' ' + value + ' ' + ts + ' ' + tags.join(' ') + suffix;
+      statString += namespace.concat('rate').join(".") + ' ' + valuePerSecond + ' ' + ts + ' ' + tags.join(' ') + suffix;
     }
 
     numStats += 1;
